@@ -34,11 +34,36 @@ module.exports = {
         return res.status(400).send(err);
       }
     },
-    editSession(req,res){
-      return res.status(200).send('Edited');
+    async updateSession(req,res){
+      let update = req.body.session;
+      try{
+        await Session.findOneAndUpdate({ _id: req.params.id }, update);
+        return res.status(200).send('updated');
+      }catch(err){
+        if(err.code == 11000){
+          return res.status(500).send(err);
+        }else if (err.name == 'CastError'){
+          return res.sendStatus(404);
+        }else{
+          return res.status(500);
+        }
+      }
     },
-    deleteSession(req,res){
-      return res.status(200).send('Deleted');
+    async deleteSession(req,res){
+      try{
+        let deleted = await Session.findOneAndDelete({ _id: req.params.id });
+        if(deleted){
+          return res.status(200).send(deleted);
+        }else{
+          return res.sendStatus(404);
+        }
+      }catch(err){
+        if (err.name == 'CastError'){
+          return res.sendStatus(404);
+        }else{
+          return res.status(500);
+        }
+      }
     }
   }
 };
