@@ -20,11 +20,14 @@ module.exports = {
         if(err.name == 'CastError'){
           return res.sendStatus(404);
         }else{
-          res.status(500).send(err);
+          return res.status(500).send(err);
         }
       }
     },
     async createSession(req,res) {
+      if(!req.decoded.student || (req.decoded.student != "administrator")){
+        return res.sendStatus(401);
+      }
       let newSession = new Session({
         name: req.body.session.name,
         professor: req.body.session.professor
