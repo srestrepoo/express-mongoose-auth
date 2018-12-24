@@ -1,5 +1,4 @@
-const Session = require('../models/session');
-const mongoose = require('mongoose');
+const Session = require('../models/session.model');
 module.exports = {
   sessionsController: {
     async getAllSessions(req, res) {
@@ -12,7 +11,10 @@ module.exports = {
     },
     async getSession(req, res) {
       try{
-        let session = await Session.findById(req.params.id);
+        let session = await Session.findOne({ _id: req.params.id });
+        if(!session){
+          return res.sendStatus(404);
+        }
         return res.status(200).send(session);
       }catch(err) {
         if(err.name == 'CastError'){

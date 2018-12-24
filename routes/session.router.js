@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { sessionsController } = require('../controllers/sessionsController');
+const { sessionsController } = require('../controllers/session.controller');
 
 router.get("/", sessionsController.getAllSessions);
 router.get("/:id", sessionsController.getSession); 
