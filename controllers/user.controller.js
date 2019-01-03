@@ -19,6 +19,24 @@ module.exports = {
       return res.status(400).send(err);
     }
   },
+  async createAdministrator(req,res){
+    if(!req.decoded.role || (req.decoded.role != "administrator")){
+      return res.sendStatus(401);
+    }
+    let newUser = new User({
+      name: req.body.user.name,
+      lastname: req.body.user.lastname,
+      username: req.body.user.username,
+      password: req.body.user.password,
+      role: 'administrator'
+    });
+    try{
+      await newUser.save();
+      return res.status(201).send(newUser);
+    }catch(err){
+      return res.status(400).send(err);
+    }
+  },
   async getAllUsers(req, res) {
     try{
       let users = await User.find();

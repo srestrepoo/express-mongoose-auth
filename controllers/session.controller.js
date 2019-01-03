@@ -25,7 +25,7 @@ module.exports = {
       }
     },
     async createSession(req,res) {
-      if(!req.decoded.student || (req.decoded.student != "administrator")){
+      if(!req.decoded.role || (req.decoded.role != "administrator")){
         return res.sendStatus(401);
       }
       let newSession = new Session({
@@ -40,6 +40,9 @@ module.exports = {
       }
     },
     async updateSession(req,res){
+      if(!req.decoded.role || (req.decoded.role == "student")){
+        return res.sendStatus(401);
+      }
       let update = req.body.session;
       try{
         await Session.findOneAndUpdate({ _id: req.params.id }, update);
@@ -55,6 +58,9 @@ module.exports = {
       }
     },
     async deleteSession(req,res){
+      if(!req.decoded.role || (req.decoded.role != "administrator")){
+        return res.sendStatus(401);
+      }
       try{
         let deleted = await Session.findOneAndDelete({ _id: req.params.id });
         if(deleted){

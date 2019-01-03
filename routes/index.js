@@ -3,10 +3,10 @@ const router = express.Router();
 const sessions = require('./session.router');
 const surveys = require('./survey.router');
 const users = require('./user.router');
-const login = require('../controllers/auth.controller');
+const auth = require('../controllers/auth.controller');
 
 router.get("/", (req,res) => res.sendStatus(200));
-router.post("/auth", login.auth);
+router.post("/auth", auth);
 router.use("/session", sessions);
 router.use("/survey", surveys);
 router.use("/user", users);
