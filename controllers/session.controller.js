@@ -3,7 +3,7 @@ module.exports = {
   sessionsController: {
     async getAllSessions(req, res) {
       try{
-        let sessions = await Session.find();
+        let sessions = await Session.find().populate('professor');
         return res.status(200).send(sessions);
       }catch(err){
         return res.status(500).send(err);
@@ -11,10 +11,11 @@ module.exports = {
     },
     async getSession(req, res) {
       try{
-        let session = await Session.findOne({ _id: req.params.id });
+        let session = await Session.findOne({ _id: req.params.id }).populate('professor');
         if(!session){
           return res.sendStatus(404);
         }
+        console.log(session.professor.name);
         return res.status(200).send(session);
       }catch(err) {
         if(err.name == 'CastError'){
