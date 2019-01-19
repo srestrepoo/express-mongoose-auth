@@ -59,5 +59,24 @@ module.exports = {
         res.status(500).send(err);
       }
     }
+  },
+  async deleteUser(req,res){
+    if(!req.decoded.role || (req.decoded.role != "administrator")){
+      return res.sendStatus(401);
+    }
+    try{
+      let deleted = await User.findOneAndDelete({ username:req.params.username });
+      if(deleted){
+        return res.status(200).send(deleted);
+      }else{
+        return res.sendStatus(404);
+      }
+    }catch(err){
+      if (err.name == 'CastError'){
+        return res.sendStatus(404);
+      }else{
+        return res.status(500);
+      }
+    }
   }
 };
