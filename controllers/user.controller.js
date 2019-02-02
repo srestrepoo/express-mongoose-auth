@@ -39,7 +39,7 @@ module.exports = {
   },
   async getAllUsers(req, res) {
     try{
-      let users = await User.find();
+      let users = await User.find({},'username name lastname role');
       return res.status(200).send(users);
     }catch(err){
       return res.status(500).send(err);
@@ -47,7 +47,7 @@ module.exports = {
   },
   async getUser(req, res) {
     try{
-      let user = await User.findOne({ username:req.params.username });
+      let user = await User.findOne({ username:req.params.username }, 'username name lastname role');
       if(!user){
         return res.sendStatus(404);
       }
