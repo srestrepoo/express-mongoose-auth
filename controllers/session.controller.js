@@ -52,7 +52,7 @@ module.exports = {
         if(err.code == 11000){
           return res.status(500).send(err);
         }else if (err.name == 'CastError'){
-          return res.sendStatus(404);
+          return res.status(404).send(err);
         }else{
           return res.status(500);
         }
