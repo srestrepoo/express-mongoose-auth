@@ -16,7 +16,7 @@ async function auth(req, res){
         username: user.username,
         role: user.role
       };
-      let token = await jwt.sign(payload, config.key);
+      let token = await jwt.sign(payload, config.key || process.env.key);
       return res.status(200).send({token:token});
     }
   }catch(err){

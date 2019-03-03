@@ -5,7 +5,7 @@ function verifyJWT(req, res, next){
   var token = req.body.token || req.query.token || req.headers['x-access-token'];
   // decode token
   if (token) {
-    jwt.verify(token, config.key, function(err, decoded) {       
+    jwt.verify(token, config.key || process.env.key, function(err, decoded) {       
       if (err) {
         return res.json({ success: false, message: 'Failed to authenticate token.' });       
       } else {
