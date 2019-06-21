@@ -2,77 +2,77 @@ const Session = require('../models/session.model');
 module.exports = {
   sessionsController: {
     async getAllSessions(req, res) {
-      try{
+      try {
         let sessions = await Session.find().populate('professor');
         return res.status(200).send(sessions);
-      }catch(err){
+      } catch (err) {
         return res.status(500).send(err);
       }
     },
     async getSession(req, res) {
-      try{
+      try {
         let session = await Session.findOne({ _id: req.params.id }).populate('professor');
-        if(!session){
+        if (!session) {
           return res.sendStatus(404);
         }
         console.log(session.professor.name);
         return res.status(200).send(session);
-      }catch(err) {
-        if(err.name == 'CastError'){
+      } catch (err) {
+        if (err.name == 'CastError') {
           return res.sendStatus(404);
-        }else{
+        } else {
           return res.status(500).send(err);
         }
       }
     },
-    async createSession(req,res) {
-      if(!req.decoded.role || (req.decoded.role != "administrator")){
+    async createSession(req, res) {
+      if (!req.decoded.role || (req.decoded.role != "administrator")) {
         return res.sendStatus(401);
       }
       let newSession = new Session({
         name: req.body.session.name,
         professor: req.body.session.professor
       });
-      try{
+      try {
         await newSession.save();
         return res.status(201).send(newSession);
-      }catch(err){
+      } catch (err) {
         return res.status(400).send(err);
       }
     },
-    async updateSession(req,res){
-      if(!req.decoded.role || (req.decoded.role == "student")){
+    async updateSession(req, res) {
+      if (!req.decoded.role || (req.decoded.role == "student")) {
         return res.sendStatus(401);
       }
       let update = req.body.session;
-      try{
+      try {
         await Session.findOneAndUpdate({ _id: req.params.id }, update);
         return res.status(200).send('updated');
-      }catch(err){
-        if(err.code == 11000){
+      } catch (err) {
+        if (err.code == 11000) {
           return res.status(500).send(err);
-        }else if (err.name == 'CastError'){
+        } else if (err.name == 'CastError') {
           return res.status(404).send(err);
-        }else{
+        } else {
           return res.status(500);
         }
       }
     },
-    async deleteSession(req,res){
-      if(!req.decoded.role || (req.decoded.role != "administrator")){
+    async deleteSession(req, res) {
+      if (!req.decoded.role || (req.decoded.role != "administrator")) {
         return res.sendStatus(401);
       }
-      try{
+      try {
         let deleted = await Session.findOneAndDelete({ _id: req.params.id });
-        if(deleted){
+        if (deleted) {
           return res.status(200).send(deleted);
-        }else{
+        } else {
           return res.sendStatus(404);
         }
-      }catch(err){
-        if (err.name == 'CastError'){
+      } catch (err) {
+        if (err.name == 'CastError') {
           return res.sendStatus(404);
-        }else{
+        } else {
           return res.status(500);
         }
       }

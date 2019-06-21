@@ -5,7 +5,7 @@ const surveys = require('./survey.router');
 const users = require('./user.router');
 const auth = require('../controllers/auth.controller');
 
-router.get("/", (req,res) => res.sendStatus(200));
+router.get("/", (req, res) => res.sendStatus(200));
 router.post("/auth", auth);
 router.use("/session", sessions);
 router.use("/survey", surveys);
