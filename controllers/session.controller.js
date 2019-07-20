@@ -1,4 +1,5 @@
 const Session = require('../models/session.model');
+const User = require('../models/user.model');
 module.exports = {
   sessionsController: {
     async getAllSessions(req, res) {
@@ -15,7 +16,6 @@ module.exports = {
         if (!session) {
           return res.sendStatus(404);
         }
-        console.log(session.professor.name);
         return res.status(200).send(session);
       } catch (err) {
         if (err.name == 'CastError') {
@@ -29,16 +29,26 @@ module.exports = {
       if (!req.decoded.role || (req.decoded.role != "administrator")) {
         return res.sendStatus(401);
       }
-      let newSession = new Session({
-        name: req.body.session.name,
-        professor: req.body.session.professor
-      });
       try {
-        await newSession.save();
-        return res.status(201).send(newSession);
-      } catch (err) {
-        return res.status(400).send(err);
+        let professor = await User.findOne({ _id: req.body.session.professor, role: `professor`});
+        if (professor){
+          let newSession = new Session({
+            name: req.body.session.name,
+            professor: req.body.session.professor
+          });
+          try {
+            await newSession.save();
+            return res.status(201).send(newSession);
+          } catch (err) {
+            return res.status(400).send(err);
+          }
+        }else{
+          return res.sendStatus(400).send(`Professor not found`);
+        }
+      }catch(error){
+        return res.sendStatus(500).send(error)
       }
+
     },
     async updateSession(req, res) {
       if (!req.decoded.role || (req.decoded.role == "student")) {
